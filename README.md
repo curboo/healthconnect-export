@@ -1,0 +1,476 @@
+# HealthConnect Export 📱
+
+[![CI](https://github.com/kas-cor/healthconnect-export/actions/workflows/build-apk.yml/badge.svg)](https://github.com/kas-cor/healthconnect-export/actions/workflows/build-apk.yml)
+[![Coverage](https://raw.githubusercontent.com/kas-cor/healthconnect-export/main/badges/coverage.svg)](https://github.com/kas-cor/healthconnect-export/actions/workflows/build-apk.yml)
+[![Branches](https://raw.githubusercontent.com/kas-cor/healthconnect-export/main/badges/branches.svg)](https://github.com/kas-cor/healthconnect-export/actions/workflows/build-apk.yml)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.4.20-purple)](https://kotlinlang.org)
+[![Version](https://img.shields.io/badge/version-1.10-blue)](CHANGELOG.md)
+[![Release](https://img.shields.io/github/v/release/kas-cor/healthconnect-export)](https://github.com/kas-cor/healthconnect-export/releases)
+[![Русский](https://img.shields.io/badge/README-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-blue)](README.ru.md)
+
+> Coverage badge auto-updates on every push to `main` via CI.
+
+Android app for exporting Google Health Connect data to JSON format with optional Google Drive sync and webhook delivery. **Dual language support**: English and Russian.
+
+## Features ✨
+
+- **Daily export** — one day = one JSON file (`health_YYYY-MM-DD.json`)
+- **Local storage** — files saved on device (external files dir)
+- **Scheduled export** — daily or weekly via WorkManager
+- **Google Drive sync** — optional, auto-sync to Drive
+- **Webhook delivery** — POST JSON to a URL (with optional Bearer auth, retry on failure)
+- **Webhook test** — test connectivity with today's data directly from UI
+- **Every-2-hours webhook** — send current day's data to webhook every 2 hours (no Drive sync)
+- **Reliable background delivery** — boot receiver, a Doze-proof watchdog alarm and an automatic catch-up of days missed while the app was idle (filled immediately when the app is opened, otherwise by the watchdog alarm), with a delivery log in the Schedule tab
+- **20 data types** — steps, heart rate, sleep, calories, exercise, nutrition, speed, and more
+- **Date range selection** — last 7/30 days or custom range with date picker
+- **Data source selection** — pick preferred health data source (Google Fit, Samsung Health, etc.)
+- **Export cancellation** — cancel in-progress export with one tap
+- **Dashboard summary** — post-export stats card with steps, HR, calories, distance, sleep
+- **JSON viewer** — full-screen dark-theme viewer with syntax highlighting + copy to clipboard
+- **Theme switching** — light/dark/follow-system with animated crossfade (Settings tab)
+- **Language switching** — English / Russian via Settings tab, persists across sessions
+- **Tabbed navigation** — Export / History / Integrations / Schedule / Settings tabs
+- **Update check** — GitHub release check with notification dot in the app bar + "What's new" dialog
+- **Google Drive sign-in** — Credential Manager authentication, previous account restored at app start; the Drive scope is authorized lazily on first sync
+- **History management** — expandable "Show all files" list (any file opens), file count + total size header
+- **File actions** — share any exported file via the system share sheet, or delete it (with confirmation)
+- **Export format** — JSON or CSV (one row per day, RFC 4180 escaping)
+- **Auto-cleanup** — keep exported files for N days, older files are removed automatically
+- **Schedule time** — pick the hour of day for daily/weekly exports
+- **Manual + automatic** — export on demand or on schedule
+
+## Architecture 🏗️
+
+```
+MainActivity → ExportScreen (Compose) → ExportViewModel
+  ├─ ExportDataUseCase         — export workflow as Flow<ExportStep>
+  ├─ DriveManager              — Google Drive sign-in/sync/sign-out
+  ├─ GoogleAuthProvider        — Credential Manager sign-in + Drive scope authorization
+  ├─ WebhookManager            — webhook settings/send/test
+  ├─ ScheduleManager           — schedule/cancel periodic exports
+  ├─ HealthConnectRepository   — read Health Connect API (batch via TypeHandler)
+  ├─ LocalExportRepository     — save/read/delete JSON files
+  ├─ GoogleDriveRepository     — Drive API calls (upload/list/delete)
+  ├─ WebhookRepository         — POST with retry
+  ├─ DailyExportWorker         — scheduled background export (daily/weekly)
+  ├─ Every2HoursWebhookWorker  — periodic webhook-only export (every 2 hours)
+  ├─ CatchUpWebhookWorker      — one-shot delivery of the days missed while idle
+  └─ DeliveryWatchdog          — watchdog alarm + boot receiver for the pipeline
+```
+
+## Quick start 🚀
+
+### Build script (`./build.sh`)
+
+Скрипт для сборки, установки, запуска и тестирования приложения.
+
+| Flag | Описание |
+|---|---|
+| *(без флагов)* | Собрать debug APK |
+| `--run` | Собрать debug APK, установить на устройство и запустить |
+| `--release` | Собрать release APK (подпись продакшн-ключом или debug-ключом) |
+| `--install [apk]` | Установить APK на устройство (по умолч. debug APK) |
+| `--pull` | Вытянуть экспортированные JSON-файлы (`health_*.json`) с устройства |
+| `--test <url> [token]` | Отправить тестовый POST с демо-данными Health Connect на webhook |
+| `--logs` | Показать logcat, отфильтрованный по приложению (`ExportScreen`, `HealthConnect`, `DriveManager`, etc.) |
+| `--help` | Показать справку |
+
+```bash
+# Debug build only
+./build.sh
+
+# Build, install, launch
+./build.sh --run
+
+# Release build (signed or debug-signed)
+./build.sh --release
+
+# Pull exported JSON files from device
+./build.sh --pull
+
+# Send test health data to webhook
+./build.sh --test https://example.com/webhook
+
+# With Bearer token
+./build.sh --test https://example.com/webhook my-token
+
+# Show app logs
+./build.sh --logs
+
+# Direct gradle
+./gradlew assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+## Testing 🧪
+
+```bash
+# Run all unit tests (397 tests)
+./gradlew testDebugUnitTest
+
+# Coverage report + gate check
+./gradlew jacocoTestReport jacocoTestCoverageVerification
+# Open: app/build/reports/jacoco/jacocoTestReport/html/index.html
+```
+
+**Test suites (397 total):**
+
+| File | Tests | Scope |
+|---|---|---|
+| `ExportViewModelTest` | 54 | ViewModel states: export, webhook, Drive sign-in/session restore, signed-out flag, Drive scope consent, update check, export format, schedule hour, retention, file actions |
+| `WebhookRepositoryTest` | 39 | sendRecords via local HTTP server (success/error/auth/special chars/JSON body) + URL validation |
+| `DataModelsSerializationTest` | 39 | Roundtrip serialization: DailyHealthRecord, ExportConfig (incl. format/hour), enums, SpeedData, sourceDisplayName |
+| `LocalExportRepositoryTest` | 31 | File operations: save (JSON/CSV), list, cleanup, delete both formats, filename format |
+| `HighlightJsonSyntaxTest` | 31 | JSON syntax highlighting: strings, numbers, booleans, null, nested objects, arrays, escaped quotes |
+| `DailyExportWorkerTest` | 30 | doWork() (success/already-exported/empty/exceptions) + schedule() (daily/weekly/manual/cancel, schedule hour) |
+| `HumanReadableMapperTest` | 27 | 8 mapper functions: bodyPosition, specimenSource, sleepStage, exerciseType, etc. |
+| `GoogleDriveRepositoryTest` | 26 | Drive sync: upload, list, download, delete, token handling, special characters |
+| `Every2HoursWebhookWorkerTest` | 18 | doWork (happy path, blank URL, exceptions) + schedule/cancel |
+| `ExportDataUseCaseTest` | 16 | Export workflow: permissions, health check, progress, webhook, Drive sync |
+| `CsvMapperTest` | 13 | CSV flattening: header/row sync, RFC 4180 escaping, double formatting, missing sections |
+| `LocaleManagerTest` | 12 | localeDisplayName all branches, saveLocale/getSavedLocale |
+| `DeliveryLogTest` | 12 | Last attempt/success persistence, ring buffer capping, delivered-date bookkeeping |
+| `CatchUpWebhookWorkerTest` | 11 | Catch-up window (7 days on the first run, capped at 30), resume point, retry on errors/unavailable Health Connect |
+| `DeliveryWatchdogTest` | 6 | Alarm arm/cancel, re-enqueue of both periodic jobs on fire, tolerates a missing AlarmManager |
+| `DeliveryWatchdogSchedulingTest` | 6 | Initial delay and interval of the watchdog schedule |
+| `ExportSettingsTest` | 5 | SharedPreferences-backed export config: defaults and roundtrip |
+| `ExportedFilesCardTest` | 5 | visibleExportFiles slicing: collapse to newest N, showAll, ≤N files, empty list |
+| `DeliveryWatchdogCatchUpTest` | 5 | When the watchdog queues a catch-up, based on the last successful delivery |
+| `DeliveryBootReceiverTest` | 4 | BOOT_COMPLETED / MY_PACKAGE_REPLACED restores the schedule and queues a catch-up |
+| `DateRangeCardTest` | 3 | Compose UI tests: presets, custom dates, picker interaction |
+| `BatteryOptimizationTest` | 3 | Doze exemption state and request intent |
+| `WatchdogAlarmReceiverTest` | 1 | Alarm fire enqueues the catch-up delivery |
+
+## CI/CD 🚀
+
+Workflow: `.github/workflows/build-apk.yml`
+
+### Triggers
+
+- **Push** to `main`, `develop`
+- **Pull Request** to `main`
+- **Push tag** `v*` (e.g., `v1.1`)
+- **Manual** via `workflow_dispatch`
+
+### Pipeline
+
+```
+Push → Lint + Ktlint → Unit tests
+     → Coverage (JaCoCo report + gate with 9 rules + badge)
+     → Debug APK
+     └─ Tag push → Decode keystore → Sign → Release APK → GitHub Release
+```
+
+### Coverage gate
+
+After every push, JaCoCo verifies coverage against 9 rules. If any rule fails, the `coverage` job fails:
+
+| Scope | Rule | Threshold |
+|---|---|---|
+| **Project-wide** | LINE | ≥ 30% |
+| | BRANCH | ≥ 12% |
+| | INSTRUCTION | ≥ 15% |
+| | CLASS | ≥ 45% |
+| **worker** package | LINE | ≥ 95% |
+| **data** package | LINE | ≥ 70% |
+| **viewmodel** package | LINE | ≥ 65% |
+| **util** package | LINE | ≥ 50% |
+| **repository** package | LINE | ≥ 35% |
+
+On push to `main`, a coverage badge is auto-committed to `badges/`.
+
+### Artifacts
+
+| Artifact | Retention | Content |
+|---|---|---|
+| `test-results` | 7 days | HTML test reports |
+| `coverage-html` | 7 days | JaCoCo HTML report |
+| `coverage-xml` | 30 days | JaCoCo XML for Codecov/SonarCloud |
+| `HealthConnectExport-debug` | 7 days | Debug APK |
+| `HealthConnectExport-release` | 30 days | Signed release APK (tag push only) |
+
+### GitHub Secrets
+
+| Secret | Description |
+|---|---|
+| `KEYSTORE_BASE64` | `healthconnect-release.jks` in base64 |
+| `KEYSTORE_PASSWORD` | Keystore password (also used as the key password; alias defaults to `healthconnect`) |
+
+### Release
+
+```bash
+git tag v1.10
+git push origin v1.10
+# CI: bump version → build → create GitHub Release
+```
+
+[Workflow](.github/workflows/build-apk.yml)
+
+## Google Drive setup 🔐
+
+Для входа в Google (Credential Manager) и доступа к Drive нужно **два** OAuth Client ID в одном Google Cloud Project:
+
+| Тип | Client ID | Назначение |
+|---|---|---|
+| **Android** (OAuth) | `730530422387-oaffqtrvfd1rqr6jn1uq8791mgbbpmlj` | Проверка SHA-1 + package name (Google Play Services) |
+| **Web application** (OAuth) | `730530422387-dveo97h089iesh4etmj74q9dn8j221f1` | `setServerClientId()` в `BuildConfig.GOOGLE_CLIENT_ID` |
+
+### SHA-1 fingerprints
+
+| Build type | SHA-1 fingerprint |
+|---|---|
+| **Release** | `2A:BF:A4:CA:62:59:78:A2:5D:78:FD:74:2D:CB:CA:07:D2:37:42:72` |
+| **Debug** | `8B:BB:D1:45:E2:61:5B:02:57:E1:3F:26:29:1A:AF:F0:2C:40:77:73` |
+
+### OAuth consent screen
+
+1. Откройте [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent)
+2. Тип: **External** → **Testing** (не требуется верификация)
+3. Добавьте **Test users** — свой email
+4. На шаге **Scopes** добавьте `https://www.googleapis.com/auth/drive.file`
+
+### Required APIs
+
+- [Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com) — `ENABLED`
+- [Identity Toolkit API](https://console.cloud.google.com/apis/library/identitytoolkit.googleapis.com) — `ENABLED`
+
+### Verify signing
+
+```bash
+apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
+# SHA-1: 2abfa4ca625978a25d78fd742dcbca07d2374272
+```
+
+## Webhook 📡
+
+After export, health data can be sent to any URL as a POST request.
+
+### Configuration
+
+- **URL** — configurable in UI, validated client-side (red highlight on invalid)
+- **Auth** — optional Bearer token (stored in `ExportConfig`)
+- **Auto-send** — toggle in UI to send automatically after each export
+- **Test** — Test Webhook button sends today's data and shows result
+- Works with both manual and scheduled exports
+
+### Request format
+
+| Attribute | Value |
+|---|---|
+| **Method** | `POST` |
+| **Content-Type** | `application/json` |
+| **Authorization** | `Bearer <token>` (optional) |
+| **Timeout** | 15 seconds |
+| **Retry** | 1 retry after 1s on 5xx/network errors |
+
+### Payload structure
+
+The JSON body is wrapped in a `messages` envelope:
+
+```json
+{
+  "messages": [
+    {
+      "date": "2026-05-23",
+      "steps": { "total_steps": 12453, "records_count": 480 },
+      "heart_rate": { "avg_bpm": 72.5, "min_bpm": 55, "max_bpm": 142, "records_count": 18 },
+      "sleep": {
+        "total_duration_minutes": 420,
+        "sleep_stages": { "Deep sleep": 90, "Light sleep": 195, "REM sleep": 105, "Awake": 30 },
+        "records_count": 1
+      },
+      "metadata": {
+        "app_version": "1.0.0",
+        "export_timestamp": "2026-05-23T23:00:00",
+        "timezone": "Europe/Moscow",
+        "source_device": "test_device"
+      }
+    }
+  ]
+}
+```
+
+Each element in the `messages` array is a `DailyHealthRecord` — one per exported day — containing all selected health data types (steps, heart rate, sleep, calories, distance, floors climbed, active calories, weight, body fat, blood pressure, blood glucose, oxygen saturation, body temperature, respiratory rate, hydration, resting heart rate, exercises, nutrition, speed, and menstruation).
+
+## Scheduling ⏰
+
+- **Manual**, **Daily** (24h), or **Weekly** (168h)
+- **Every 2 hours** — optional webhook-only sending of current day's data (checkbox in Schedule section)
+- Default: Daily (auto-enabled at startup)
+- Uses WorkManager `PeriodicWorkRequest` **without** a battery constraint (exports are cheap; the low-battery gate silently blocked them)
+- **Watchdog:** an inexact alarm that is allowed to fire during Doze (`setAndAllowWhileIdle`) re-enqueues the periodic jobs and queues a one-shot catch-up
+- **After reboot / app update:** `DeliveryBootReceiver` re-enqueues the schedule from the saved settings (the `RECEIVE_BOOT_COMPLETED` permission was declared but never used before)
+- **Catch-up:** `CatchUpWebhookWorker` resumes from the newest day that was actually delivered and sends everything after it in one payload (at most 30 days)
+- **Diagnostics:** the Schedule tab shows the last attempt / last success and a delivery log; a failed attempt never reports `failure`, because WorkManager terminates a failed periodic job permanently
+- **Battery exemption:** the Schedule tab offers the optional Doze exemption and shows whether it is granted
+
+## Localization 🌐
+
+- **Languages**: English (default), Russian
+- **Locale switching**: Via Settings tab → Language
+- **Coverage**: All 211 strings translated in `values-ru/strings.xml`
+- **Format safety**: All `%d`, `%s`, `%.1f` placeholders match between locales
+- **Persistence**: Selected locale saved in SharedPreferences
+
+### Локализация 🇷🇺
+
+Приложение полностью переведено на русский язык.
+
+**Как переключить язык:**
+
+1. Откройте вкладку **Настройки** (шестерёнка в нижней панели) → раздел **Язык**
+2. Выберите **Русский** (или **Системный** для автоматического выбора языка устройства)
+
+**Что переведено:**
+
+Все строки интерфейса:
+- Названия типов данных (Шаги, Пульс, Сон, Калории, Дистанция и т.д.)
+- Интерфейс экспорта и расписания
+- Сообщения об ошибках и статусе
+- Google Drive, Webhook
+- JSON viewer, сводка экспорта
+- Все системные уведомления (WorkManager)
+
+**Технические детали:**
+
+- Файл перевода: `app/src/main/res/values-ru/strings.xml`
+- Все **211 строк** переведены — ни одной пропущенной английской строки
+- Форматные плейсхолдеры (`%d`, `%s`, `%.1f`) полностью совпадают с английской версией — никаких crash'ей при переключении языка
+- Выбор языка сохраняется в `SharedPreferences` и восстанавливается после перезапуска
+- На здоровье не влияет — JSON-данные экспортируются с английскими ключами независимо от языка интерфейса
+
+**Добавить или исправить перевод:**
+
+Отредактируйте `app/src/main/res/values-ru/strings.xml` и запустите валидатор:
+
+```bash
+python3 scripts/locale-validator.py
+```
+
+### How to add a new language 🌍
+
+Want to translate the app into your language? Here's a step-by-step guide.
+
+#### 1. Create a translation file
+
+Copy the English `strings.xml` into a new folder named with your language code.
+
+For example, for German:
+
+```bash
+# Create the new locale directory
+mkdir -p app/src/main/res/values-de
+
+# Copy the English strings
+cp app/src/main/res/values/strings.xml app/src/main/res/values-de/strings.xml
+```
+
+Use your own [language code](https://developer.android.com/guide/topics/resources/providing-resources#LocaleQualifier) instead of `de`.
+
+#### 2. Translate all strings
+
+Edit `app/src/main/res/values-de/strings.xml` — translate **all** values (`<string>...</string>`), but **keep** the `name` attributes unchanged.
+
+Important:
+- Preserve format placeholders (`%d`, `%s`, `%.1f`) — they are filled programmatically
+- Brand names (`HealthConnect Export`, `Google Drive`, `Health Connect`, `WorkManager`) can stay in English
+- Technical terms (`JSON`, `URL`, `Bearer`, `Webhook`) are typically left untranslated
+
+#### 3. Run the validator
+
+```bash
+python3 scripts/locale-validator.py
+```
+
+The validator checks that all strings are translated and no keys are missing.
+
+#### 4. Add the locale to the app UI
+
+Edit `LocaleManager.kt` (`app/src/main/java/com/healthconnect/export/util/LocaleManager.kt`):
+
+```kotlin
+// Add your language to the available locales
+enum class AppLocale(val code: String, val displayName: String) {
+    SYSTEM("", "System"),
+    EN("en", "English"),
+    RU("ru", "Русский"),
+    DE("de", "Deutsch"),  // ← your language
+}
+```
+
+#### 5. Create a README in your language
+
+Copy and translate `README.md`:
+
+```bash
+cp README.md README.de.md
+# Translate the content to German
+```
+
+Add a badge link in `README.md`:
+
+```markdown
+[![Deutsch](https://img.shields.io/badge/README-Deutsch-blue)](README.de.md)
+```
+
+#### 6. Open a Pull Request
+
+Create a PR on GitHub with your translation files. After merging:
+- The new language will appear in the language switcher 🌐 in the app
+- Your README will be accessible via the badge in the main README
+
+**Thank you for your contribution!** 🙌
+
+## Permissions
+
+| Permission | Purpose |
+|---|---|
+| `INTERNET` | Drive sync + webhook |
+| `ACCESS_NETWORK_STATE` | Network check |
+| `FOREGROUND_SERVICE` | Scheduled work |
+| `RECEIVE_BOOT_COMPLETED` | Reschedule after reboot |
+| `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | Optional Doze exemption, offered in the Schedule tab |
+| `health.READ_*` | Health Connect data types (20 types) |
+
+## Tech stack
+
+| Component | Version |
+|---|---|
+| Language | Kotlin 2.4.20 |
+| UI | Jetpack Compose + Material3 (BOM 2026.09.00) |
+| Build | AGP 9.4.0 / Gradle 9.7.1 |
+| Health Connect | `connect-client:1.1.0` |
+| Google Drive | `google-api-services-drive:v3-rev20240123-2.0.0`, `google-api-client-android:2.9.1`, `google-http-client-gson:2.2.0` |
+| Auth | `play-services-auth:22.0.0`, `androidx.credentials:1.6.0`, `googleid:1.2.1` |
+| Background | WorkManager `work-runtime-ktx:2.11.2` |
+| Serialization | `kotlinx-serialization-json:1.11.0` |
+| minSdk / targetSdk / compileSdk | 28 / 37 / 37 |
+| JVM | 21 |
+| Linting | ktlint 14.2.0 |
+| Testing | JUnit 4.13.2, Mockito 5.23.0, mockito-kotlin 6.3.0, Robolectric 4.17 |
+| Coverage | JaCoCo 0.8.12 |
+| CI | GitHub Actions |
+
+## Changelog 📋
+
+See [CHANGELOG.md](CHANGELOG.md) for full release history.
+
+| Version | Date | Highlights |
+|---|---|---|
+| [v1.10](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.10) | 2026-09-27 | Google Sign-In migrated to Credential Manager, Drive scope requested lazily, catch-up of undelivered days on app open, 397 tests |
+| [v1.9](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.9) | 2026-09-25 | Background delivery survives reboots, Doze and OEM battery savers: watchdog alarm, boot receiver, catch-up of missed days, delivery log |
+| [v1.8](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.8) | 2026-08-10 | File actions in History (share/delete), JSON/CSV export format, auto-cleanup retention, schedule hour, 341 tests |
+| [v1.7](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.7) | 2026-08-10 | Update check + "What's new" dialog, tabbed navigation, Google Drive auto sign-in, History improvements |
+| [v1.6](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.6) | 2026-07-17 | Build script (`build.sh`), Russian README (`README.ru.md`), README sync validation |
+| [v1.5](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.5) | 2026-06-08 | Every-2-hours webhook worker, test webhook button, file sorting descending, dependency updates (Kotlin 2.3.21, Gradle 9.5.1) |
+| [v1.4](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.4) | 2026-06-07 | Date range fix: endDate includes today, 7/30 day presets corrected |
+| [v1.3](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.3) | 2026-05-27 | Webhook payload format `{\"messages\": [...]}`, export progress with per-day bars, cancel button, day-by-day read |
+| [v1.2](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.2) | 2026-05-27 | **+99 tests** (295 total), repo coverage ~55%, WebhookRepository rewritten with local HTTP server |
+| [v1.1](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.1) | 2026-05-26 | Coverage gate, ktlint, API upgrade, webhook auth, +83 tests, Russian L10n |
+| [v1.0](https://github.com/kas-cor/healthconnect-export/releases/tag/v1.0) | — | Initial release: JSON export, Drive sync, webhook, WorkManager, Material3 UI |
+
+## License 📄
+
+MIT
