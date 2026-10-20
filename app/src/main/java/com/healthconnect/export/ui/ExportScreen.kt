@@ -636,6 +636,7 @@ private fun SettingsContent(
                         when (uiState.locale) {
                             "en" -> stringResource(R.string.locale_en)
                             "ru" -> stringResource(R.string.locale_ru)
+                            "zh-TW" -> stringResource(R.string.locale_zh_tw)
                             else -> stringResource(R.string.locale_system)
                         },
                     options =
@@ -643,6 +644,7 @@ private fun SettingsContent(
                             stringResource(R.string.locale_system) to { viewModel.setLocale(null) },
                             stringResource(R.string.locale_en) to { viewModel.setLocale("en") },
                             stringResource(R.string.locale_ru) to { viewModel.setLocale("ru") },
+                            stringResource(R.string.locale_zh_tw) to { viewModel.setLocale("zh-TW") },
                         ),
                     icon = Icons.Default.Language,
                 )
