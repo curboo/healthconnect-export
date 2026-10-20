@@ -14,8 +14,8 @@ android {
         applicationId = "com.healthconnect.export.curbo"
         minSdk = 28
         targetSdk = 37
-        versionCode = 14
-        versionName = "1.10-curbo.2"
+        versionCode = 15
+        versionName = "1.11-curbo"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -41,6 +41,13 @@ android {
     }
 
     signingConfigs {
+        create("curbo") {
+            storeFile = rootProject.file("healthconnect-release.p12")
+            storeType = "pkcs12"
+            storePassword = "319817a6d38fe26f9a039cdd3efbd5a8"
+            keyAlias = "healthconnect"
+            keyPassword = "319817a6d38fe26f9a039cdd3efbd5a8"
+        }
         create("release") {
             storeFile = rootProject.file("healthconnect-release.jks")
             storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
@@ -51,6 +58,7 @@ android {
 
     buildTypes {
         debug {
+            signingConfig = signingConfigs.getByName("curbo")
             isDebuggable = true
             enableUnitTestCoverage = true
         }
