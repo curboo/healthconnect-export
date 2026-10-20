@@ -367,16 +367,16 @@ fun healthDataTypeDisplayName(type: HealthDataType): String =
         HealthDataType.NUTRITION -> stringResource(R.string.data_type_NUTRITION)
         HealthDataType.SPEED -> stringResource(R.string.data_type_SPEED)
         HealthDataType.MENSTRUATION -> stringResource(R.string.data_type_MENSTRUATION)
-        HealthDataType.LEAN_BODY_MASS -> "Lean Body Mass"
-        HealthDataType.BODY_WATER_MASS -> "Body Water Mass"
-        HealthDataType.BONE_MASS -> "Bone Mass"
-        HealthDataType.BASAL_METABOLIC_RATE -> "Basal Metabolic Rate"
-        HealthDataType.HRV -> "Heart Rate Variability"
-        HealthDataType.VO2_MAX -> "VO2 Max"
-        HealthDataType.HEIGHT -> "Height"
-        HealthDataType.ELEVATION_GAINED -> "Elevation Gained"
-        HealthDataType.POWER -> "Power"
-        HealthDataType.STEPS_CADENCE -> "Steps Cadence"
+        HealthDataType.LEAN_BODY_MASS -> stringResource(R.string.data_type_LEAN_BODY_MASS)
+        HealthDataType.BODY_WATER_MASS -> stringResource(R.string.data_type_BODY_WATER_MASS)
+        HealthDataType.BONE_MASS -> stringResource(R.string.data_type_BONE_MASS)
+        HealthDataType.BASAL_METABOLIC_RATE -> stringResource(R.string.data_type_BASAL_METABOLIC_RATE)
+        HealthDataType.HRV -> stringResource(R.string.data_type_HRV)
+        HealthDataType.VO2_MAX -> stringResource(R.string.data_type_VO2_MAX)
+        HealthDataType.HEIGHT -> stringResource(R.string.data_type_HEIGHT)
+        HealthDataType.ELEVATION_GAINED -> stringResource(R.string.data_type_ELEVATION_GAINED)
+        HealthDataType.POWER -> stringResource(R.string.data_type_POWER)
+        HealthDataType.STEPS_CADENCE -> stringResource(R.string.data_type_STEPS_CADENCE)
     }
 
 private fun iconForType(type: HealthDataType): ImageVector =
