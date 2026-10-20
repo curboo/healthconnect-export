@@ -114,6 +114,10 @@ class HealthConnectRepository(
                 HealthDataType.EXERCISE -> permissions.add(HealthPermission.getReadPermission(ExerciseSessionRecord::class))
                 HealthDataType.NUTRITION -> permissions.add(HealthPermission.getReadPermission(NutritionRecord::class))
                 HealthDataType.MENSTRUATION -> permissions.add(HealthPermission.getReadPermission(MenstruationFlowRecord::class))
+                HealthDataType.LEAN_BODY_MASS -> permissions.add(HealthPermission.getReadPermission(LeanBodyMassRecord::class))
+                HealthDataType.BODY_WATER_MASS -> permissions.add(HealthPermission.getReadPermission(BodyWaterMassRecord::class))
+                HealthDataType.BONE_MASS -> permissions.add(HealthPermission.getReadPermission(BoneMassRecord::class))
+                HealthDataType.BASAL_METABOLIC_RATE -> permissions.add(HealthPermission.getReadPermission(BasalMetabolicRateRecord::class))
                 HealthDataType.SPEED -> permissions.add(HealthPermission.getReadPermission(SpeedRecord::class))
             }
         }
@@ -664,6 +668,34 @@ class HealthConnectRepository(
                     { (it as MenstruationFlowRecord).time },
                     { r, _ -> extractMenstruation(r as List<MenstruationFlowRecord>) },
                     { r, d -> r.copy(menstruation = d as MenstruationData?) },
+                ),
+            HealthDataType.LEAN_BODY_MASS to
+                TypeHandler(
+                    LeanBodyMassRecord::class,
+                    { (it as LeanBodyMassRecord).time },
+                    { r, _ -> (r as List<LeanBodyMassRecord>).takeIf { it.isNotEmpty() }?.let { l -> MassData(l.maxBy { it.time }.mass.inKilograms, l.size) } },
+                    { r, d -> r.copy(leanBodyMass = d as MassData?) },
+                ),
+            HealthDataType.BODY_WATER_MASS to
+                TypeHandler(
+                    BodyWaterMassRecord::class,
+                    { (it as BodyWaterMassRecord).time },
+                    { r, _ -> (r as List<BodyWaterMassRecord>).takeIf { it.isNotEmpty() }?.let { l -> MassData(l.maxBy { it.time }.mass.inKilograms, l.size) } },
+                    { r, d -> r.copy(bodyWaterMass = d as MassData?) },
+                ),
+            HealthDataType.BONE_MASS to
+                TypeHandler(
+                    BoneMassRecord::class,
+                    { (it as BoneMassRecord).time },
+                    { r, _ -> (r as List<BoneMassRecord>).takeIf { it.isNotEmpty() }?.let { l -> MassData(l.maxBy { it.time }.mass.inKilograms, l.size) } },
+                    { r, d -> r.copy(boneMass = d as MassData?) },
+                ),
+            HealthDataType.BASAL_METABOLIC_RATE to
+                TypeHandler(
+                    BasalMetabolicRateRecord::class,
+                    { (it as BasalMetabolicRateRecord).time },
+                    { r, _ -> (r as List<BasalMetabolicRateRecord>).takeIf { it.isNotEmpty() }?.let { l -> BmrData(l.maxBy { it.time }.basalMetabolicRate.inKilocaloriesPerDay, l.size) } },
+                    { r, d -> r.copy(basalMetabolicRate = d as BmrData?) },
                 ),
         )
 
