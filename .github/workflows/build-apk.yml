@@ -24,7 +24,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/v')
       with:
         files: HCExport-curbo.apk
-        body: "Fork of kas-cor/healthconnect-export 1.10: correct Health Connect sleep stage mapping; adds sleep sessions with start/end, asleep/awake minutes, latency."
+        body: "HC Export curbo ${{ github.ref_name }} (fork of kas-cor/healthconnect-export): correct HC sleep stage mapping and sleep sessions; body composition; READ_HEALTH_DATA_HISTORY; 1.13 adds phone screen_time (UsageStatsManager, needs Usage access) and hydration.total_ml."
     - uses: actions/upload-artifact@v7
       with:
         name: apk

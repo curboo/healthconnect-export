@@ -46,6 +46,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -577,6 +578,7 @@ private fun ScheduleContent(
                 onRefreshDeliveryStatus = {
                     viewModel.refreshDeliveryStatus()
                     viewModel.refreshBatteryOptimizationStatus()
+                    viewModel.refreshUsageAccessStatus()
                 },
             )
         }
@@ -681,6 +683,37 @@ private fun SettingsContent(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+        }
+        item {
+            MaterialCard {
+                MaterialSectionHeader(
+                    icon = Icons.Default.Settings,
+                    title = stringResource(R.string.usage_access_title),
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text =
+                        if (uiState.usageAccessGranted) {
+                            stringResource(R.string.usage_access_granted)
+                        } else {
+                            stringResource(R.string.usage_access_not_granted)
+                        },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (uiState.usageAccessGranted) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.error
+                        },
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                OutlinedButton(
+                    onClick = viewModel::openUsageAccessSettings,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(stringResource(R.string.usage_access_button))
+                }
             }
         }
         item {

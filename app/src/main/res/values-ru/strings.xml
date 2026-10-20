@@ -288,4 +288,9 @@
     <string name="data_type_ELEVATION_GAINED">Elevation Gained</string>
     <string name="data_type_POWER">Power</string>
     <string name="data_type_STEPS_CADENCE">Steps Cadence</string>
+    <string name="usage_access_title">Доступ к статистике использования</string>
+    <string name="usage_access_granted">Разрешён — экранное время включается в экспорт</string>
+    <string name="usage_access_not_granted">Не разрешён — экранное время не экспортируется</string>
+    <string name="usage_access_button">Открыть настройки доступа</string>
+    <string name="usage_access_unavailable">Не удалось открыть настройки доступа к статистике</string>
 </resources>

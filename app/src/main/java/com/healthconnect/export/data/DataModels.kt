@@ -42,6 +42,7 @@ data class DailyHealthRecord(
     @SerialName("elevation_gained") val elevationGained: ValueData? = null,
     @SerialName("power") val power: ValueData? = null,
     @SerialName("steps_cadence") val stepsCadence: ValueData? = null,
+    @SerialName("screen_time") val screenTime: ScreenTimeData? = null,
     @SerialName("metadata") val metadata: ExportMetadata,
 )
 
@@ -178,6 +179,24 @@ data class RespiratoryRateData(
 data class HydrationData(
     @SerialName("total_volume_liters") val totalVolumeLiters: Double,
     @SerialName("records_count") val recordsCount: Int,
+    @SerialName("total_ml") val totalMl: Long? = null,
+)
+
+/** Phone screen time for one local day, from UsageStatsManager. */
+@Serializable
+data class ScreenTimeData(
+    @SerialName("total_minutes") val totalMinutes: Long,
+    @SerialName("unlocks") val unlocks: Int? = null,
+    @SerialName("apps") val apps: List<ScreenTimeAppData> = emptyList(),
+)
+
+@Serializable
+data class ScreenTimeAppData(
+    @SerialName("package") val packageName: String,
+    @SerialName("label") val label: String,
+    @SerialName("minutes") val minutes: Long,
+    /** Foreground minutes per local hour 0–23. */
+    @SerialName("hours") val hours: List<Int>,
 )
 
 @Serializable

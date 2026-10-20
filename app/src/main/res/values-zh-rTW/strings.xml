@@ -222,4 +222,9 @@
     <string name="data_type_ELEVATION_GAINED">爬升高度</string>
     <string name="data_type_POWER">功率</string>
     <string name="data_type_STEPS_CADENCE">步頻</string>
+    <string name="usage_access_title">手機使用時間權限</string>
+    <string name="usage_access_granted">已授權：匯出會包含手機使用時間</string>
+    <string name="usage_access_not_granted">未授權：匯出不含手機使用時間</string>
+    <string name="usage_access_button">開啟「使用情形存取權」設定</string>
+    <string name="usage_access_unavailable">無法開啟使用情形存取權設定</string>
 </resources>

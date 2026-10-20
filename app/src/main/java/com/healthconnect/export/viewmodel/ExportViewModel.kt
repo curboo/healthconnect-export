@@ -18,6 +18,7 @@ import com.healthconnect.export.repository.LocalExportRepository
 import com.healthconnect.export.usecase.ExportDataUseCase
 import com.healthconnect.export.usecase.ExportStep
 import com.healthconnect.export.util.BatteryOptimization
+import com.healthconnect.export.util.ScreenTimeReader
 import com.healthconnect.export.util.DeliveryLog
 import com.healthconnect.export.util.ExportSettings
 import com.healthconnect.export.util.LocaleManager
@@ -74,6 +75,7 @@ data class ExportUiState(
     val lastDeliveryAttemptResult: String? = null,
     val lastDeliverySuccessAt: Long? = null,
     val batteryOptimizationIgnored: Boolean = true,
+    val usageAccessGranted: Boolean = false,
 )
 
 sealed class DriveStatus {
@@ -172,6 +174,7 @@ class ExportViewModel(
         // the user is here now, so fill the gap right away.
         DeliveryWatchdog.catchUpIfStale(getApplication(), "app_start")
         refreshBatteryOptimizationStatus()
+        refreshUsageAccessStatus()
         driveManager.refreshDriveStatus()
         // Keep uiState.driveStatus in sync with DriveManager: the status is
         // updated asynchronously (e.g. after the session restore at startup or
@@ -564,6 +567,22 @@ class ExportViewModel(
     /** Reloads whether the app is exempt from battery optimization. */
     fun refreshBatteryOptimizationStatus() {
         _uiState.update { it.copy(batteryOptimizationIgnored = BatteryOptimization.isIgnored(getApplication())) }
+    }
+
+    /** Reloads whether "Usage access" (phone screen time) is granted. */
+    fun refreshUsageAccessStatus() {
+        _uiState.update { it.copy(usageAccessGranted = ScreenTimeReader.hasUsageAccess(getApplication())) }
+    }
+
+    /** Opens the system "Usage access" settings screen. */
+    fun openUsageAccessSettings() {
+        try {
+            val intent = ScreenTimeReader.usageAccessSettingsIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            getApplication<Application>().startActivity(intent)
+        } catch (e: Exception) {
+            Log.e("ExportViewModel", "Failed to open usage access settings", e)
+            _uiState.update { it.copy(message = str(R.string.usage_access_unavailable)) }
+        }
     }
 
     /** Opens the system dialog asking to exempt the app from battery optimization. */

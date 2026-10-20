@@ -442,7 +442,11 @@ class HealthConnectRepository(
     private fun extractHydration(records: List<HydrationRecord>): HydrationData? {
         if (records.isEmpty()) return null
         val total = records.sumOf { it.volume.inLiters }
-        return HydrationData(totalVolumeLiters = total, recordsCount = records.size)
+        return HydrationData(
+            totalVolumeLiters = total,
+            recordsCount = records.size,
+            totalMl = Math.round(total * 1000.0),
+        )
     }
 
     private fun extractRestingHeartRate(records: List<RestingHeartRateRecord>): RestingHeartRateData? {
@@ -861,6 +865,19 @@ class HealthConnectRepository(
                 } else {
                     Log.w(TAG, "readPeriodInBatch: no handler registered for $type")
                 }
+            }
+
+            // Phone screen time (UsageStatsManager). Needs "Usage access"; omitted otherwise.
+            try {
+                val screenTime =
+                    com.healthconnect.export.util.ScreenTimeReader
+                        .readDays(context, startDate, endDate)
+                screenTime.forEach { (dateStr, data) ->
+                    daysMap[dateStr]?.let { daysMap[dateStr] = it.copy(screenTime = data) }
+                }
+                Log.d(TAG, "readPeriodInBatch: screen time days=${screenTime.size}")
+            } catch (e: Exception) {
+                Log.w(TAG, "readPeriodInBatch: screen time failed", e)
             }
 
             // Build sorted result list (compatible with minSdk 28)

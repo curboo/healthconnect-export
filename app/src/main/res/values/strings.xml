@@ -288,4 +288,9 @@
     <string name="data_type_ELEVATION_GAINED">Elevation Gained</string>
     <string name="data_type_POWER">Power</string>
     <string name="data_type_STEPS_CADENCE">Steps Cadence</string>
+    <string name="usage_access_title">Phone usage time access</string>
+    <string name="usage_access_granted">Granted — screen time is included in exports</string>
+    <string name="usage_access_not_granted">Not granted — screen time is omitted from exports</string>
+    <string name="usage_access_button">Open usage access settings</string>
+    <string name="usage_access_unavailable">Could not open usage access settings</string>
 </resources>

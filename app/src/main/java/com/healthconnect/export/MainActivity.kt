@@ -23,6 +23,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.health.connect.client.PermissionController
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -83,6 +85,19 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 onDispose { viewModel.setDriveAuthorizationLauncher(null) }
+            }
+
+            // Re-check special permissions when returning from system settings.
+            DisposableEffect(Unit) {
+                val observer =
+                    LifecycleEventObserver { _, event ->
+                        if (event == Lifecycle.Event.ON_RESUME) {
+                            viewModel.refreshUsageAccessStatus()
+                            viewModel.refreshBatteryOptimizationStatus()
+                        }
+                    }
+                this@MainActivity.lifecycle.addObserver(observer)
+                onDispose { this@MainActivity.lifecycle.removeObserver(observer) }
             }
 
             DisposableEffect(Unit) {
