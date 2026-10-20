@@ -1,0 +1,29 @@
+name: Build curbo APK
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+    - uses: android-actions/setup-android@v3
+    - run: echo "sdk.dir=${ANDROID_HOME}" > local.properties
+    - run: chmod +x gradlew && ./gradlew assembleDebug --stacktrace
+    - run: cp app/build/outputs/apk/debug/app-debug.apk HCExport-curbo.apk
+    - uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        files: HCExport-curbo.apk
+        body: "Fork of kas-cor/healthconnect-export 1.10: correct Health Connect sleep stage mapping; adds sleep sessions with start/end, asleep/awake minutes, latency."
+    - uses: actions/upload-artifact@v4
+      with:
+        name: apk
+        path: HCExport-curbo.apk
