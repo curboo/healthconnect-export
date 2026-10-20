@@ -14,8 +14,8 @@ android {
         applicationId = "com.healthconnect.export.curbo"
         minSdk = 28
         targetSdk = 37
-        versionCode = 17
-        versionName = "1.13-curbo"
+        versionCode = 18
+        versionName = "1.14-curbo"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
