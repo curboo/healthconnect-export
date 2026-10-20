@@ -87,6 +87,7 @@ private fun categoryForType(type: HealthDataType): DataTypeCategory =
 
         HealthDataType.WEIGHT, HealthDataType.BODY_FAT, HealthDataType.HYDRATION,
         HealthDataType.SLEEP, HealthDataType.NUTRITION, HealthDataType.MENSTRUATION,
+        HealthDataType.LEAN_BODY_MASS, HealthDataType.BODY_WATER_MASS, HealthDataType.BONE_MASS, HealthDataType.BASAL_METABOLIC_RATE,
         -> DataTypeCategory.BODY
     }
 
@@ -364,6 +365,10 @@ fun healthDataTypeDisplayName(type: HealthDataType): String =
         HealthDataType.NUTRITION -> stringResource(R.string.data_type_NUTRITION)
         HealthDataType.SPEED -> stringResource(R.string.data_type_SPEED)
         HealthDataType.MENSTRUATION -> stringResource(R.string.data_type_MENSTRUATION)
+        HealthDataType.LEAN_BODY_MASS -> "Lean Body Mass"
+        HealthDataType.BODY_WATER_MASS -> "Body Water Mass"
+        HealthDataType.BONE_MASS -> "Bone Mass"
+        HealthDataType.BASAL_METABOLIC_RATE -> "Basal Metabolic Rate"
     }
 
 private fun iconForType(type: HealthDataType): ImageVector =
@@ -388,4 +393,5 @@ private fun iconForType(type: HealthDataType): ImageVector =
         HealthDataType.NUTRITION -> Icons.Default.Restaurant
         HealthDataType.SPEED -> Icons.Default.Speed
         HealthDataType.MENSTRUATION -> Icons.Default.CalendarMonth
+        HealthDataType.LEAN_BODY_MASS, HealthDataType.BODY_WATER_MASS, HealthDataType.BONE_MASS, HealthDataType.BASAL_METABOLIC_RATE -> Icons.Default.Scale
     }
