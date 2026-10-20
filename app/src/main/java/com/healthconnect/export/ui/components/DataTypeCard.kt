@@ -77,17 +77,19 @@ private fun categoryForType(type: HealthDataType): DataTypeCategory =
         HealthDataType.STEPS, HealthDataType.DISTANCE, HealthDataType.FLOORS_CLIMBED,
         HealthDataType.CALORIES, HealthDataType.ACTIVE_CALORIES,
         HealthDataType.EXERCISE, HealthDataType.SPEED,
+        HealthDataType.ELEVATION_GAINED, HealthDataType.POWER, HealthDataType.STEPS_CADENCE,
         -> DataTypeCategory.ACTIVITY
 
         HealthDataType.HEART_RATE, HealthDataType.RESTING_HEART_RATE,
         HealthDataType.BLOOD_PRESSURE, HealthDataType.BLOOD_GLUCOSE,
         HealthDataType.OXYGEN_SATURATION, HealthDataType.BODY_TEMPERATURE,
-        HealthDataType.RESPIRATORY_RATE,
+        HealthDataType.RESPIRATORY_RATE, HealthDataType.HRV, HealthDataType.VO2_MAX,
         -> DataTypeCategory.VITALS
 
         HealthDataType.WEIGHT, HealthDataType.BODY_FAT, HealthDataType.HYDRATION,
         HealthDataType.SLEEP, HealthDataType.NUTRITION, HealthDataType.MENSTRUATION,
         HealthDataType.LEAN_BODY_MASS, HealthDataType.BODY_WATER_MASS, HealthDataType.BONE_MASS, HealthDataType.BASAL_METABOLIC_RATE,
+        HealthDataType.HEIGHT,
         -> DataTypeCategory.BODY
     }
 
@@ -369,6 +371,12 @@ fun healthDataTypeDisplayName(type: HealthDataType): String =
         HealthDataType.BODY_WATER_MASS -> "Body Water Mass"
         HealthDataType.BONE_MASS -> "Bone Mass"
         HealthDataType.BASAL_METABOLIC_RATE -> "Basal Metabolic Rate"
+        HealthDataType.HRV -> "Heart Rate Variability"
+        HealthDataType.VO2_MAX -> "VO2 Max"
+        HealthDataType.HEIGHT -> "Height"
+        HealthDataType.ELEVATION_GAINED -> "Elevation Gained"
+        HealthDataType.POWER -> "Power"
+        HealthDataType.STEPS_CADENCE -> "Steps Cadence"
     }
 
 private fun iconForType(type: HealthDataType): ImageVector =
@@ -394,4 +402,5 @@ private fun iconForType(type: HealthDataType): ImageVector =
         HealthDataType.SPEED -> Icons.Default.Speed
         HealthDataType.MENSTRUATION -> Icons.Default.CalendarMonth
         HealthDataType.LEAN_BODY_MASS, HealthDataType.BODY_WATER_MASS, HealthDataType.BONE_MASS, HealthDataType.BASAL_METABOLIC_RATE -> Icons.Default.Scale
+        HealthDataType.HRV, HealthDataType.VO2_MAX, HealthDataType.HEIGHT, HealthDataType.ELEVATION_GAINED, HealthDataType.POWER, HealthDataType.STEPS_CADENCE -> Icons.Default.Favorite
     }
