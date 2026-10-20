@@ -12,6 +12,7 @@ import android.provider.Settings
 import android.util.Log
 import com.healthconnect.export.data.ScreenTimeAppData
 import com.healthconnect.export.data.ScreenTimeData
+import com.healthconnect.export.data.ScreenSessionData
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -44,6 +45,15 @@ object ScreenTimeReader {
     private const val LOOKBACK_MS = 6L * 60 * 60 * 1000
 
     private const val MINUTE_MS = 60_000L
+
+    /** Same-app sessions separated by less than this are merged on the timeline. */
+    private const val MERGE_GAP_MS = 30_000L
+
+    /** Timeline sessions shorter than this are dropped (still counted in totals). */
+    private const val MIN_SESSION_MS = 10_000L
+
+    private val HMS = java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")
+    private val HM = java.time.format.DateTimeFormatter.ofPattern("HH:mm")
 
     private val ALWAYS_EXCLUDED =
         setOf(
@@ -225,6 +235,49 @@ object ScreenTimeReader {
 
         val labels = mutableMapOf<String, String>()
         val result = mutableMapOf<String, ScreenTimeData>()
+
+        // Timeline: merge same-app sessions with tiny gaps, clip to window, split at local midnight.
+        val timeline = mutableMapOf<String, MutableList<ScreenSessionData>>()
+        val merged = mutableListOf<Session>()
+        sessions.sortedBy { it.start }.forEach { s ->
+            val st = maxOf(s.start, windowStart)
+            val en = minOf(s.end, windowEnd)
+            if (en <= st) return@forEach
+            val last = merged.lastOrNull()
+            if (last != null && last.pkg == s.pkg && st - last.end < MERGE_GAP_MS) {
+                merged[merged.size - 1] = last.copy(end = maxOf(last.end, en))
+            } else {
+                merged.add(Session(s.pkg, st, en))
+            }
+        }
+        merged.forEach { s ->
+            var cursor = s.start
+            while (cursor < s.end) {
+                val zdt = Instant.ofEpochMilli(cursor).atZone(zone)
+                val midnight = zdt.toLocalDate().plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+                val sliceEnd = minOf(s.end, midnight)
+                if (sliceEnd - cursor >= MIN_SESSION_MS) {
+                    val endZ = Instant.ofEpochMilli(sliceEnd).atZone(zone)
+                    timeline.getOrPut(zdt.toLocalDate().toString()) { mutableListOf() }.add(
+                        ScreenSessionData(
+                            packageName = s.pkg,
+                            label = labels.getOrPut(s.pkg) { label(s.pkg) },
+                            start = zdt.format(HMS),
+                            end = if (sliceEnd == midnight) "24:00:00" else endZ.format(HMS),
+                            seconds = (sliceEnd - cursor) / 1000,
+                        ),
+                    )
+                }
+                cursor = sliceEnd
+            }
+        }
+        val unlockTimesPerDay =
+            unlockTimes
+                .filter { it in windowStart until windowEnd }
+                .sorted()
+                .groupBy({ Instant.ofEpochMilli(it).atZone(zone).toLocalDate().toString() }) {
+                    Instant.ofEpochMilli(it).atZone(zone).format(HM)
+                }
         var day = startDate
         while (!day.isAfter(endDate)) {
             val key = day.toString()
@@ -250,6 +303,8 @@ object ScreenTimeReader {
                         totalMinutes = Math.round(totalMs.toDouble() / MINUTE_MS),
                         unlocks = if (unlocksAvailable) (unlocks ?: 0) else null,
                         apps = appList,
+                        sessions = timeline[key].orEmpty(),
+                        unlockTimes = if (unlocksAvailable) unlockTimesPerDay[key].orEmpty() else emptyList(),
                     )
             }
             day = day.plusDays(1)
