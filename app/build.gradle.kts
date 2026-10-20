@@ -15,7 +15,7 @@ android {
         minSdk = 28
         targetSdk = 37
         versionCode = 14
-        versionName = "1.10-curbo.1"
+        versionName = "1.10-curbo.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
