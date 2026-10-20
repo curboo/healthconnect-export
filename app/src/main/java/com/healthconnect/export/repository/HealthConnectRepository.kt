@@ -118,6 +118,12 @@ class HealthConnectRepository(
                 HealthDataType.BODY_WATER_MASS -> permissions.add(HealthPermission.getReadPermission(BodyWaterMassRecord::class))
                 HealthDataType.BONE_MASS -> permissions.add(HealthPermission.getReadPermission(BoneMassRecord::class))
                 HealthDataType.BASAL_METABOLIC_RATE -> permissions.add(HealthPermission.getReadPermission(BasalMetabolicRateRecord::class))
+                HealthDataType.HRV -> permissions.add(HealthPermission.getReadPermission(HeartRateVariabilityRmssdRecord::class))
+                HealthDataType.VO2_MAX -> permissions.add(HealthPermission.getReadPermission(Vo2MaxRecord::class))
+                HealthDataType.HEIGHT -> permissions.add(HealthPermission.getReadPermission(HeightRecord::class))
+                HealthDataType.ELEVATION_GAINED -> permissions.add(HealthPermission.getReadPermission(ElevationGainedRecord::class))
+                HealthDataType.POWER -> permissions.add(HealthPermission.getReadPermission(PowerRecord::class))
+                HealthDataType.STEPS_CADENCE -> permissions.add(HealthPermission.getReadPermission(StepsCadenceRecord::class))
                 HealthDataType.SPEED -> permissions.add(HealthPermission.getReadPermission(SpeedRecord::class))
             }
         }
@@ -696,6 +702,48 @@ class HealthConnectRepository(
                     { (it as BasalMetabolicRateRecord).time },
                     { r, _ -> (r as List<BasalMetabolicRateRecord>).takeIf { it.isNotEmpty() }?.let { l -> BmrData(l.maxBy { it.time }.basalMetabolicRate.inKilocaloriesPerDay, l.size) } },
                     { r, d -> r.copy(basalMetabolicRate = d as BmrData?) },
+                ),
+            HealthDataType.HRV to
+                TypeHandler(
+                    HeartRateVariabilityRmssdRecord::class,
+                    { (it as HeartRateVariabilityRmssdRecord).time },
+                    { r, _ -> (r as List<HeartRateVariabilityRmssdRecord>).takeIf { it.isNotEmpty() }?.let { l -> ValueData(l.map { it.heartRateVariabilityMillis }.average(), "ms", l.size) } },
+                    { r, d -> r.copy(hrv = d as ValueData?) },
+                ),
+            HealthDataType.VO2_MAX to
+                TypeHandler(
+                    Vo2MaxRecord::class,
+                    { (it as Vo2MaxRecord).time },
+                    { r, _ -> (r as List<Vo2MaxRecord>).takeIf { it.isNotEmpty() }?.let { l -> ValueData(l.maxBy { it.time }.vo2MillilitersPerMinuteKilogram, "ml_kg_min", l.size) } },
+                    { r, d -> r.copy(vo2Max = d as ValueData?) },
+                ),
+            HealthDataType.HEIGHT to
+                TypeHandler(
+                    HeightRecord::class,
+                    { (it as HeightRecord).time },
+                    { r, _ -> (r as List<HeightRecord>).takeIf { it.isNotEmpty() }?.let { l -> ValueData(l.maxBy { it.time }.height.inMeters, "m", l.size) } },
+                    { r, d -> r.copy(height = d as ValueData?) },
+                ),
+            HealthDataType.ELEVATION_GAINED to
+                TypeHandler(
+                    ElevationGainedRecord::class,
+                    { (it as ElevationGainedRecord).startTime },
+                    { r, _ -> (r as List<ElevationGainedRecord>).takeIf { it.isNotEmpty() }?.let { l -> ValueData(l.sumOf { it.elevation.inMeters }, "m", l.size) } },
+                    { r, d -> r.copy(elevationGained = d as ValueData?) },
+                ),
+            HealthDataType.POWER to
+                TypeHandler(
+                    PowerRecord::class,
+                    { (it as PowerRecord).startTime },
+                    { r, _ -> (r as List<PowerRecord>).takeIf { it.isNotEmpty() }?.let { l -> ValueData(l.flatMap { it.samples }.map { it.power.inWatts }.average(), "avg_watts", l.size) } },
+                    { r, d -> r.copy(power = d as ValueData?) },
+                ),
+            HealthDataType.STEPS_CADENCE to
+                TypeHandler(
+                    StepsCadenceRecord::class,
+                    { (it as StepsCadenceRecord).startTime },
+                    { r, _ -> (r as List<StepsCadenceRecord>).takeIf { it.isNotEmpty() }?.let { l -> ValueData(l.flatMap { it.samples }.map { it.rate }.average(), "avg_steps_per_min", l.size) } },
+                    { r, d -> r.copy(stepsCadence = d as ValueData?) },
                 ),
         )
 
