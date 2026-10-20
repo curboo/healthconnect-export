@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
             val onRequestHealthPermissions: (Set<String>) -> Unit = { permissions ->
                 Log.d("MainActivity", "Launching permissions: $permissions")
                 try {
-                    healthPermissionLauncher.launch(permissions)
+                    healthPermissionLauncher.launch(permissions + "android.permission.health.READ_HEALTH_DATA_HISTORY")
                 } catch (e: Exception) {
                     Log.e("MainActivity", "Failed to launch permissions", e)
                     viewModel.onPermissionsResult(emptySet())
