@@ -188,6 +188,20 @@ data class ScreenTimeData(
     @SerialName("total_minutes") val totalMinutes: Long,
     @SerialName("unlocks") val unlocks: Int? = null,
     @SerialName("apps") val apps: List<ScreenTimeAppData> = emptyList(),
+    /** Foreground sessions in local time order (timeline). */
+    @SerialName("sessions") val sessions: List<ScreenSessionData> = emptyList(),
+    /** Local times (HH:mm) the keyguard was dismissed. */
+    @SerialName("unlock_times") val unlockTimes: List<String> = emptyList(),
+)
+
+@Serializable
+data class ScreenSessionData(
+    @SerialName("package") val packageName: String,
+    @SerialName("label") val label: String,
+    /** Local start / end, HH:mm:ss. */
+    @SerialName("start") val start: String,
+    @SerialName("end") val end: String,
+    @SerialName("seconds") val seconds: Long,
 )
 
 @Serializable
