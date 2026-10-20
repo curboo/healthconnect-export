@@ -1,0 +1,280 @@
+<resources>
+    <!-- App -->
+    <string name="app_name">HealthConnect Export</string>
+    <string name="app_title">HealthConnect Export</string>
+
+    <!-- Theme toggle -->
+    <string name="theme_follow_system">Как в системе</string>
+    <string name="theme_switch_light">Светлая тема</string>
+    <string name="theme_switch_dark">Тёмная тема</string>
+
+    <!-- Drive Status -->
+    <string name="drive_not_connected">Google Drive не подключён</string>
+    <string name="drive_connected">Google Drive подключён</string>
+    <string name="drive_syncing">Синхронизация…</string>
+    <string name="drive_synced">Синхронизировано: %d файлов</string>
+    <string name="drive_error">Ошибка: %s</string>
+    <string name="sign_in">Войти в Google</string>
+    <string name="sync_now">Синхр.</string>
+    <string name="sign_out">Выйти</string>
+
+    <!-- Scheduled Export -->
+    <string name="scheduled_export">Запланированный экспорт</string>
+    <string name="enable_schedule">Включить расписание</string>
+    <string name="disable">Отключить</string>
+    <string name="next_run">Следующий запуск: через 24ч</string>
+    <string name="schedule_set">Экспорт запланирован: %s</string>
+    <string name="schedule_cancelled">Экспорт отменён</string>
+
+    <!-- Background delivery diagnostics -->
+    <string name="delivery_status_title">Фоновая выгрузка</string>
+    <string name="delivery_last_attempt">Последняя попытка: %1$s</string>
+    <string name="delivery_last_success">Последняя успешная выгрузка: %1$s</string>
+    <string name="delivery_never">не было</string>
+    <string name="delivery_refresh">Обновить</string>
+    <string name="delivery_log_button">Журнал выгрузок</string>
+    <string name="delivery_log_title">Журнал выгрузок</string>
+    <string name="delivery_log_empty">Записей пока нет</string>
+    <string name="delivery_close">Закрыть</string>
+
+    <!-- Battery optimization -->
+    <string name="battery_optimization_title">Оптимизация батареи</string>
+    <string name="battery_optimization_exempt">Фоновая работа разрешена</string>
+    <string name="battery_optimization_restricted">Ограничена — система может задерживать фоновую выгрузку</string>
+    <string name="battery_optimization_button">Разрешить работу в фоне</string>
+    <string name="battery_optimization_unavailable">Не удалось открыть настройки оптимизации батареи</string>
+
+    <!-- Data Types -->
+    <string name="data_types">Типы данных</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="deselect_all">Снять все</string>
+    <string name="expand_section">Развернуть раздел</string>
+    <string name="collapse_section">Свернуть раздел</string>
+    <string name="expand_all">Развернуть все</string>
+    <string name="collapse_all">Свернуть все</string>
+    <string name="category_activity">Активность</string>
+    <string name="category_vitals">Жизн. показатели</string>
+    <string name="category_body">Тело</string>
+
+    <!-- Data type names -->
+    <string name="data_type_STEPS">Шаги</string>
+    <string name="data_type_HEART_RATE">Пульс</string>
+    <string name="data_type_SLEEP">Сон</string>
+    <string name="data_type_CALORIES">Калории</string>
+    <string name="data_type_DISTANCE">Дистанция</string>
+    <string name="data_type_FLOORS_CLIMBED">Этажи</string>
+    <string name="data_type_ACTIVE_CALORIES">Активные калории</string>
+    <string name="data_type_WEIGHT">Вес</string>
+    <string name="data_type_BODY_FAT">Жир</string>
+    <string name="data_type_BLOOD_PRESSURE">Давление</string>
+    <string name="data_type_BLOOD_GLUCOSE">Глюкоза</string>
+    <string name="data_type_OXYGEN_SATURATION">Сатурация</string>
+    <string name="data_type_BODY_TEMPERATURE">Температура</string>
+    <string name="data_type_RESPIRATORY_RATE">Дыхание</string>
+    <string name="data_type_HYDRATION">Гидратация</string>
+    <string name="data_type_RESTING_HEART_RATE">Пульс покоя</string>
+    <string name="data_type_EXERCISE">Тренировки</string>
+    <string name="data_type_NUTRITION">Питание</string>
+    <string name="data_type_SPEED">Скорость</string>
+    <string name="data_type_MENSTRUATION">Цикл</string>
+
+    <!-- Export Period -->
+    <string name="export_period">Период экспорта</string>
+    <string name="days_7">7 дней</string>
+    <string name="days_30">30 дней</string>
+    <string name="from_label">С</string>
+    <string name="to_label">По</string>
+
+    <!-- Auto-sync -->
+    <string name="auto_sync_drive">Автосинхронизация с Google Drive</string>
+
+    <!-- Export Button -->
+    <string name="export_data_types">Экспорт %d типов данных</string>
+    <string name="exported_files_title">Экспортировано файлов (%d)</string>
+    <string name="exported_files_total_size">Итого: %1$s</string>
+    <string name="exported_files_show_all">Показать все файлы (%1$d)</string>
+    <string name="exported_files_show_less">Свернуть</string>
+
+    <!-- File actions -->
+    <string name="share_file">Поделиться файлом</string>
+    <string name="share_file_error">Не удалось поделиться файлом</string>
+    <string name="file_deleted">%1$s удалён</string>
+    <string name="file_delete_title">Удалить файл?</string>
+    <string name="file_delete_message">Удалить %1$s? Это действие нельзя отменить.</string>
+    <string name="file_delete_confirm">Удалить</string>
+    <string name="file_delete_cancel">Отмена</string>
+
+    <!-- Export format -->
+    <string name="export_format_title">Формат экспорта</string>
+    <string name="export_format_label">Формат</string>
+    <string name="export_format_json">JSON</string>
+    <string name="export_format_csv">CSV</string>
+    <string name="export_format_csv_note">CSV содержит только дневные суммы и средние значения; детальные записи (фазы сна, упражнения, питание) доступны в JSON.</string>
+
+    <!-- Data retention -->
+    <string name="retention_title">Хранение данных</string>
+    <string name="retention_enable">Автоудалять старые файлы</string>
+    <string name="retention_days_label">Хранить файлы</string>
+    <string name="retention_days_format">%1$d дней</string>
+    <string name="retention_hint">Файлы старше этого периода удаляются автоматически при запуске приложения и после каждого экспорта.</string>
+
+    <!-- Schedule time of day -->
+    <string name="schedule_time_label">Время экспорта</string>
+    <string name="schedule_time_default">По умолчанию</string>
+
+    <!-- File sizes -->
+    <string name="file_size_bytes">%d Б</string>
+    <string name="file_size_kb">%d КБ</string>
+    <string name="file_size_mb">%.1f МБ</string>
+
+    <!-- Webhook -->
+    <string name="webhook">Вебхук</string>
+    <string name="webhook_url_label">URL вебхука</string>
+    <string name="webhook_url_placeholder">https://example.com/api/health-data</string>
+    <string name="bearer_token_label">Токен Bearer (необязательно)</string>
+    <string name="bearer_token_placeholder">sk-…</string>
+    <string name="enter_url_first">Сначала введите URL вебхука</string>
+    <string name="send_json">Отправлять JSON на вебхук после экспорта</string>
+
+    <!-- Webhook errors -->
+    <string name="webhook_server_error">Сервер вернул код %1$d: %2$s</string>
+    <string name="webhook_unknown_error">Неизвестная ошибка</string>
+
+    <!-- Locale selector -->
+    <string name="locale_switch">Язык</string>
+    <string name="locale_system">Системный</string>
+    <string name="locale_en">Английский</string>
+    <string name="locale_ru">Русский</string>
+
+    <!-- Frequency -->
+    <string name="freq_manual">Вручную</string>
+    <string name="freq_daily">Ежедневно</string>
+    <string name="freq_weekly">Еженедельно</string>
+
+    <!-- Data Source Selection -->
+    <string name="data_source">Источник данных</string>
+    <string name="source_auto">Авто (рекомендуется)</string>
+    <string name="source_auto_desc">Автоматический выбор лучшего источника</string>
+    <string name="scanning_sources">Поиск источников данных…</string>
+    <string name="no_sources_found">Источники данных не найдены</string>
+    <string name="refresh_sources">Обновить источники</string>
+    <string name="refresh">Обновить</string>
+
+    <!-- ViewModel messages -->
+    <string name="vm_check_permissions">Проверка разрешений…</string>
+    <string name="vm_permissions_required">Требуются разрешения Health Connect. Подтвердите в открывшемся окне.</string>
+    <string name="vm_reading_data">Чтение данных…</string>
+    <string name="vm_saving_days">Сохранение %d дней…</string>
+    <string name="vm_saved_files">Сохранено %d файлов</string>
+    <string name="vm_export_complete">Экспорт завершён: %d файлов</string>
+    <string name="vm_export_error">Ошибка экспорта: %s</string>
+    <string name="vm_sending_webhook">Отправка на webhook…</string>
+    <string name="vm_webhook_success">Webhook: успешно (%d)</string>
+    <string name="vm_webhook_error">Webhook: ошибка %1$d — %2$s</string>
+    <string name="vm_permissions_granted">Разрешения получены. Начинаю экспорт…</string>
+    <string name="vm_permissions_missing">Разрешения Health Connect не предоставлены для: %s. Экспорт невозможен. Откройте приложение Health Connect и разрешите доступ к этим типам данных.</string>
+    <string name="vm_drive_connected">Google аккаунт подключён: %s</string>
+    <string name="vm_drive_signin_failed">Не удалось войти в Google</string>
+    <string name="vm_drive_access_required">Для синхронизации нужен доступ к Google Диску</string>
+    <string name="vm_drive_access_denied">Доступ к Google Диску не предоставлен</string>
+    <string name="vm_drive_signed_out">Google аккаунт отключён</string>
+    <string name="vm_drive_not_connected">Google Drive не подключён</string>
+    <string name="vm_drive_synced">Синхронизировано с Drive: %d файлов</string>
+    <string name="vm_invalid_url">Неверный формат URL. Должен начинаться с http:// или https://</string>
+    <string name="vm_health_not_available">Не удалось подключиться к Health Connect. Попробуйте перезапустить приложение.</string>
+    <string name="vm_health_not_installed">Health Connect не установлен. Установите приложение Health Connect из Google Play.</string>
+    <string name="vm_no_data_types">Выберите хотя бы один тип данных</string>
+    <string name="vm_invalid_date_range">Дата начала не может быть позже даты окончания</string>
+
+    <!-- JSON Viewer -->
+    <string name="json_viewer_title">%s</string>
+    <string name="json_viewer_close">Закрыть</string>
+    <string name="json_viewer_open_error">Не удалось прочитать файл</string>
+    <string name="json_viewer_copy">Копировать в буфер</string>
+
+    <!-- Dashboard Summary -->
+    <string name="dashboard_title">📊 Сводка экспорта</string>
+    <string name="dashboard_period">%1$s — %2$s (%3$d дн.)</string>
+    <string name="dashboard_steps">Шаги</string>
+    <string name="dashboard_avg_hr">Ср. пульс</string>
+    <string name="dashboard_calories">Калории</string>
+    <string name="dashboard_distance">Дистанция</string>
+    <string name="dashboard_avg_sleep">Ср. сон</string>
+    <string name="dashboard_active_calories">Акт. кал</string>
+    <string name="dashboard_dismiss">Закрыть</string>
+    <string name="dashboard_label_steps">Шаги</string>
+    <string name="dashboard_label_hr">Пульс</string>
+    <string name="dashboard_label_calories">кКал</string>
+    <string name="dashboard_label_distance">Дист</string>
+    <string name="dashboard_label_sleep">Ср. сон</string>
+    <string name="dashboard_label_active_cal">Акт. кал</string>
+    <string name="dashboard_no_data">—</string>
+
+    <!-- Export Progress -->
+    <string name="export_progress_reading">Чтение %s…</string>
+    <string name="export_progress_page">%1$s  •  стр. %2$d</string>
+    <string name="export_progress_saving">Сохранение %s…</string>
+
+    <!-- Every 2 Hours Webhook -->
+    <string name="every_2_hours_webhook">Отправлять каждые 2 часа (только webhook)</string>
+    <string name="enter_url_first_every_2h">Сначала введите URL вебхука</string>
+    <string name="every_2_hours_enabled">Отправка каждые 2 часа включена</string>
+    <string name="every_2_hours_disabled">Отправка каждые 2 часа отключена</string>
+
+    <!-- Webhook test -->
+    <string name="webhook_test">Тест вебхука</string>
+    <string name="webhook_testing">Тестирование вебхука…</string>
+    <string name="vm_webhook_test_success">Тест вебхука: успешно (%d)</string>
+    <string name="vm_webhook_test_error">Тест вебхука: ошибка %1$d — %2$s</string>
+    <string name="vm_webhook_no_data">Нет данных о здоровье за сегодня</string>
+
+    <!-- Cancel -->
+    <string name="cancel_export">Отмена</string>
+    <string name="vm_export_cancelled">Экспорт отменён</string>
+
+    <!-- Health Connect access limitation -->
+    <string name="health_connect_access_limit">Данные могут быть ограничены последними 30 днями</string>
+
+    <!-- Нижняя навигация -->
+    <string name="nav_export">Экспорт</string>
+    <string name="nav_history">История</string>
+    <string name="nav_integrations">Связи</string>
+    \1План\2
+    <string name="nav_settings">Настройки</string>
+    <string name="history_empty_title">Экспортов пока нет</string>
+    <string name="history_empty_description">Завершённые экспорты появятся здесь.</string>
+    <string name="appearance">Внешний вид</string>
+    <string name="health_connect_access">Доступ к Health Connect</string>
+
+
+
+    <string name="theme_label">Тема</string>
+    <string name="theme_system">Системная</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="language_label">Язык</string>
+    <string name="about">О приложении</string>
+    <string name="app_description">Экспорт данных Health Connect в JSON, Google Drive и webhook.</string>
+    <string name="version_format">Версия %1$s</string>
+    <string name="check_for_updates">Проверить обновления</string>
+    <string name="checking_for_updates">Проверка обновлений…</string>
+    <string name="up_to_date">Установлена актуальная версия</string>
+    <string name="update_available">Доступно обновление: %1$s</string>
+    <string name="update_download">Скачать</string>
+    <string name="update_check_error">Не удалось проверить обновления</string>
+    <string name="retry">Повторить</string>
+    <string name="whats_new">Что нового</string>
+    <string name="whats_new_title">Что нового в %1$s</string>
+    <string name="update_available_badge">Доступно обновление. Нажмите, чтобы посмотреть.</string>
+    <string name="release_notes_unavailable">Описание обновления недоступно.</string>
+    <string name="close">Закрыть</string>
+    <string name="github_repository">Открыть репозиторий</string>
+    <string name="github_url" translatable="false">https://github.com/kas-cor/healthconnect-export</string>
+    <string name="releases_url" translatable="false">https://github.com/kas-cor/healthconnect-export/releases/latest</string>
+    <string name="api_releases_url" translatable="false">https://api.github.com/repos/kas-cor/healthconnect-export/releases/latest</string>
+    <string name="nav_schedule">План</string>
+    <string name="notification_channel_export">Выгрузка по расписанию</string>
+    <string name="notification_channel_export_desc">Показывается, когда выгрузка по расписанию читает и отправляет данные о здоровье.</string>
+    <string name="notification_export_title">Выгрузка данных о здоровье</string>
+    <string name="notification_export_text">Читаем и отправляем данные о здоровье…</string>
+</resources>
