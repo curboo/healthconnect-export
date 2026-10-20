@@ -145,6 +145,7 @@
     <string name="locale_system">Системный</string>
     <string name="locale_en">Английский</string>
     <string name="locale_ru">Русский</string>
+    <string name="locale_zh_tw">繁體中文</string>
 
     <!-- Frequency -->
     <string name="freq_manual">Вручную</string>
@@ -277,4 +278,14 @@
     <string name="notification_channel_export_desc">Показывается, когда выгрузка по расписанию читает и отправляет данные о здоровье.</string>
     <string name="notification_export_title">Выгрузка данных о здоровье</string>
     <string name="notification_export_text">Читаем и отправляем данные о здоровье…</string>
+    <string name="data_type_LEAN_BODY_MASS">Lean Body Mass</string>
+    <string name="data_type_BODY_WATER_MASS">Body Water Mass</string>
+    <string name="data_type_BONE_MASS">Bone Mass</string>
+    <string name="data_type_BASAL_METABOLIC_RATE">Basal Metabolic Rate</string>
+    <string name="data_type_HRV">Heart Rate Variability</string>
+    <string name="data_type_VO2_MAX">VO2 Max</string>
+    <string name="data_type_HEIGHT">Height</string>
+    <string name="data_type_ELEVATION_GAINED">Elevation Gained</string>
+    <string name="data_type_POWER">Power</string>
+    <string name="data_type_STEPS_CADENCE">Steps Cadence</string>
 </resources>
