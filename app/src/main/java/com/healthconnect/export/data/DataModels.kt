@@ -36,6 +36,12 @@ data class DailyHealthRecord(
     @SerialName("body_water_mass") val bodyWaterMass: MassData? = null,
     @SerialName("bone_mass") val boneMass: MassData? = null,
     @SerialName("basal_metabolic_rate") val basalMetabolicRate: BmrData? = null,
+    @SerialName("heart_rate_variability") val hrv: ValueData? = null,
+    @SerialName("vo2_max") val vo2Max: ValueData? = null,
+    @SerialName("height") val height: ValueData? = null,
+    @SerialName("elevation_gained") val elevationGained: ValueData? = null,
+    @SerialName("power") val power: ValueData? = null,
+    @SerialName("steps_cadence") val stepsCadence: ValueData? = null,
     @SerialName("metadata") val metadata: ExportMetadata,
 )
 
@@ -111,6 +117,13 @@ data class WeightData(
 @Serializable
 data class MassData(
     @SerialName("kg") val kg: Double,
+    @SerialName("records_count") val recordsCount: Int,
+)
+
+@Serializable
+data class ValueData(
+    @SerialName("value") val value: Double,
+    @SerialName("unit") val unit: String,
     @SerialName("records_count") val recordsCount: Int,
 )
 
@@ -323,6 +336,12 @@ enum class HealthDataType(
     BODY_WATER_MASS("Body Water Mass"),
     BONE_MASS("Bone Mass"),
     BASAL_METABOLIC_RATE("Basal Metabolic Rate"),
+    HRV("Heart Rate Variability"),
+    VO2_MAX("VO2 Max"),
+    HEIGHT("Height"),
+    ELEVATION_GAINED("Elevation Gained"),
+    POWER("Power"),
+    STEPS_CADENCE("Steps Cadence"),
 }
 
 // ===== Health Connect Int constant → Human-readable string mappers =====
