@@ -32,6 +32,10 @@ data class DailyHealthRecord(
     @SerialName("nutrition") val nutrition: List<NutritionData>? = null,
     @SerialName("speed") val speed: SpeedData? = null,
     @SerialName("menstruation") val menstruation: MenstruationData? = null,
+    @SerialName("lean_body_mass") val leanBodyMass: MassData? = null,
+    @SerialName("body_water_mass") val bodyWaterMass: MassData? = null,
+    @SerialName("bone_mass") val boneMass: MassData? = null,
+    @SerialName("basal_metabolic_rate") val basalMetabolicRate: BmrData? = null,
     @SerialName("metadata") val metadata: ExportMetadata,
 )
 
@@ -101,6 +105,18 @@ data class ActiveCaloriesData(
 @Serializable
 data class WeightData(
     @SerialName("weight_kg") val weightKg: Double,
+    @SerialName("records_count") val recordsCount: Int,
+)
+
+@Serializable
+data class MassData(
+    @SerialName("kg") val kg: Double,
+    @SerialName("records_count") val recordsCount: Int,
+)
+
+@Serializable
+data class BmrData(
+    @SerialName("kcal_per_day") val kcalPerDay: Double,
     @SerialName("records_count") val recordsCount: Int,
 )
 
@@ -303,6 +319,10 @@ enum class HealthDataType(
     NUTRITION("Nutrition"),
     SPEED("Speed"),
     MENSTRUATION("Menstruation"),
+    LEAN_BODY_MASS("Lean Body Mass"),
+    BODY_WATER_MASS("Body Water Mass"),
+    BONE_MASS("Bone Mass"),
+    BASAL_METABOLIC_RATE("Basal Metabolic Rate"),
 }
 
 // ===== Health Connect Int constant → Human-readable string mappers =====
