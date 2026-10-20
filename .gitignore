@@ -1,0 +1,40 @@
+# Android
+*.iml
+.gradle/
+build/
+app/build/
+local.properties
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# QWEN context
+.qwen/
+QWEN.md
+
+# Exported health data
+exports/
+
+# Secrets
+client_secret_*.json
+google-services.json
+*.jks
+*.keystore
+*.base64
+.keystore_password.txt
+KEYSTORE_PASSWORD.txt
+
+# Build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
